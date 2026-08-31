@@ -1,42 +1,33 @@
 import React, { useState } from "react";
 import Navbar from "./components/Navbar";
-import Sidebar from "./components/Sidebar";
-import DashboardView from "./components/DashboardView";
-import AiStudioView from "./components/AiStudioView";
-import FormatsExplorerView from "./components/FormatsExplorerView";
-import HookGeneratorView from "./components/HookGeneratorView";
-import ScriptBuilderView from "./components/ScriptBuilderView";
-import GurusDirectoryView from "./components/GurusDirectoryView";
-import GithubToolsView from "./components/GithubToolsView";
-import HanahAlefVaultView from "./components/HanahAlefVaultView";
-import OmnichannelPlaybookView from "./components/OmnichannelPlaybookView";
-import GeoAiSearchAuditView from "./components/GeoAiSearchAuditView";
-import WeeklyPlannerView from "./components/WeeklyPlannerView";
+import ScriptGeneratorView from "./components/ScriptGeneratorView";
+import HookGeneratorProView from "./components/HookGeneratorProView";
+import ProfileAuditView from "./components/ProfileAuditView";
+import FormatsVisualView from "./components/FormatsVisualView";
+import OnlineToolsView from "./components/OnlineToolsView";
+import CreatorSecretsView from "./components/CreatorSecretsView";
+import MasterclassView from "./components/MasterclassView";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("script_ai");
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
-      <Navbar />
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
+        {activeTab === "script_ai" && <ScriptGeneratorView />}
+        {activeTab === "hooks_pro" && <HookGeneratorProView />}
+        {activeTab === "audit_profile" && <ProfileAuditView />}
+        {activeTab === "formats_simple" && <FormatsVisualView />}
+        {activeTab === "tools_online" && <OnlineToolsView />}
+        {activeTab === "secrets_masters" && <CreatorSecretsView />}
+        {activeTab === "masterclass" && <MasterclassView />}
+      </main>
 
-      <div className="flex-1 flex flex-col md:flex-row">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-        
-        <main className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full overflow-y-auto">
-          {activeTab === "dashboard" && <DashboardView setActiveTab={setActiveTab} />}
-          {activeTab === "ai_studio" && <AiStudioView />}
-          {activeTab === "formats" && <FormatsExplorerView />}
-          {activeTab === "hooks" && <HookGeneratorView />}
-          {activeTab === "script_builder" && <ScriptBuilderView />}
-          {activeTab === "gurus" && <GurusDirectoryView />}
-          {activeTab === "github_tools" && <GithubToolsView />}
-          {activeTab === "hanah_alef" && <HanahAlefVaultView />}
-          {activeTab === "omnichannel" && <OmnichannelPlaybookView />}
-          {activeTab === "geo_audit" && <GeoAiSearchAuditView />}
-          {activeTab === "planner" && <WeeklyPlannerView />}
-        </main>
-      </div>
+      <footer className="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        CreatorOS Pro © 2026-2027 • Diseñado para que cualquier persona o negocio cree contenido que retiene y vende.
+      </footer>
     </div>
   );
 }
