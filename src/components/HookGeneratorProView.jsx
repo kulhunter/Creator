@@ -1,113 +1,122 @@
 import React, { useState } from "react";
-import { HOOK_CATEGORIES } from "../data/easyData";
-import { Sparkles, Copy, Check } from "lucide-react";
+import { HOOK_COLLECTION } from "../data/masterData";
+import { Sparkles, Copy, Check, RefreshCw } from "lucide-react";
+import { generateWithAI } from "../services/aiEngine";
 
 export default function HookGeneratorProView() {
-  const [niche, setNiche] = useState("Marketing / Negocios");
-  const [error, setError] = useState("publicar sin formato");
-  const [goal, setGoal] = useState("conseguir clientes");
-  const [selectedCat, setSelectedCat] = useState("provocador");
-  const [copiedIndex, setCopiedIndex] = useState(null);
+  const [topic, setTopic] = useState("Vender servicios online");
+  const [customHooks, setCustomHooks] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [copiedIdx, setCopiedIdx] = useState(null);
 
-  const currentCat = HOOK_CATEGORIES.find((c) => c.id === selectedCat) || HOOK_CATEGORIES[0];
+  const handleGenerateCustom = async () => {
+    if (!topic.trim()) return;
+    setLoading(true);
 
-  const getHookText = (template) => {
-    return template
-      .replace(/{nicho}/g, niche || "tu nicho")
-      .replace(/{error}/g, error || "hacerlo de la forma tradicional")
-      .replace(/{meta}/g, goal || "tener resultados");
+    const prompt = `Genera 5 ganchos (hooks) de 3 segundos para videos de TikTok/Reels sobre este tema: "${topic}".
+Deben ser frases cortas, en español natural, que rompan una creencia común o generen urgencia inmediata sin sonar a robot.`;
+
+    try {
+      const res = await generateWithAI(prompt, "Eres un copywriter experto en hooks virales para redes sociales.");
+      const lines = res.split("\n").filter((l) => l.trim().length > 5);
+      setCustomHooks(lines.slice(0, 5));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCopy = (idx, text) => {
+  const handleCopy = (text, idx) => {
     navigator.clipboard.writeText(text);
-    setCopiedIndex(idx);
-    setTimeout(() => setCopiedIndex(null), 2000);
+    setCopiedIdx(idx);
+    setTimeout(() => setCopiedIdx(null), 2000);
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto animate-fadeIn">
       <div className="text-center space-y-2 max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold">
           <Sparkles className="w-4 h-4" />
           LABORATORIO DE GANCHOS (HOOKS)
         </div>
         <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-          Ganchos Virales que Paran el Scroll
+          Ganchos que Paran el Scroll en 3 Segundos
         </h1>
         <p className="text-sm text-slate-400">
-          Elige la emoción que quieres transmitir y obtén frases de 3 segundos probadas para que no pasen de largo de tus videos.
+          Usa los ganchos validados o genera 5 ganchos personalizados con Inteligencia Artificial para tu nicho.
         </p>
       </div>
 
-      <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-4 shadow-xl">
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold text-slate-300">Tu Tema o Nicho:</label>
+      {/* AI Hook Generator */}
+      <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 shadow-xl">
+        <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
-            value={niche}
-            onChange={(e) => setNiche(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-blue-500"
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            placeholder="Escribe tu tema (ej: Cómo bajar de peso, Invertir en bienes raíces...)"
+            className="flex-1 p-3 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-blue-500"
           />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold text-slate-300">El Error que cometen:</label>
-          <input
-            type="text"
-            value={error}
-            onChange={(e) => setError(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-blue-500"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs font-bold text-slate-300">La Meta o Resultado:</label>
-          <input
-            type="text"
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white focus:outline-none focus:border-blue-500"
-          />
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2 overflow-x-auto pb-2">
-        {HOOK_CATEGORIES.map((cat) => (
           <button
-            key={cat.id}
-            onClick={() => setSelectedCat(cat.id)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-              selectedCat === cat.id
-                ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
-                : "bg-slate-900 border border-slate-800 text-slate-400 hover:text-white"
-            }`}
+            onClick={handleGenerateCustom}
+            disabled={loading}
+            className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30"
           >
-            {cat.name}
+            {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            Generar con IA
           </button>
-        ))}
+        </div>
+
+        {customHooks.length > 0 && (
+          <div className="space-y-2 pt-2 border-t border-slate-800">
+            <span className="text-xs font-bold text-blue-400 uppercase">Ganchos Generados para ti:</span>
+            {customHooks.map((h, i) => (
+              <div key={i} className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-3 text-xs">
+                <span className="text-white font-bold">{h}</span>
+                <button
+                  onClick={() => handleCopy(h, `custom_${i}`)}
+                  className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold shrink-0"
+                >
+                  {copiedIdx === `custom_${i}` ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 gap-3">
-        {currentCat.hooks.map((template, idx) => {
-          const hookText = getHookText(template);
-          return (
-            <div
-              key={idx}
-              className="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-blue-500/40 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm"
-            >
-              <div className="space-y-1">
-                <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Opción {idx + 1}</span>
-                <p className="text-base font-bold text-white">"{hookText}"</p>
-              </div>
-
-              <button
-                onClick={() => handleCopy(idx, hookText)}
-                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-slate-950 hover:bg-blue-600 hover:text-white border border-slate-800 text-xs font-bold text-slate-300 flex items-center justify-center gap-1.5 transition-all"
-              >
-                {copiedIndex === idx ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                {copiedIndex === idx ? "¡Copiado!" : "Copiar"}
-              </button>
+      {/* Preset Categories */}
+      <div className="space-y-6">
+        {HOOK_COLLECTION.map((cat, ci) => (
+          <div key={ci} className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4">
+            <div>
+              <h3 className="text-base font-bold text-white">{cat.category}</h3>
+              <p className="text-xs text-slate-400">{cat.desc}</p>
             </div>
-          );
-        })}
+
+            <div className="grid grid-cols-1 gap-2.5">
+              {cat.hooks.map((hk, hi) => {
+                const uniqueKey = `${ci}_${hi}`;
+                return (
+                  <div
+                    key={hi}
+                    className="p-3.5 rounded-xl bg-slate-950 border border-slate-800/80 hover:border-blue-500/40 flex items-center justify-between gap-4 transition-all"
+                  >
+                    <span className="text-xs font-semibold text-slate-200">"{hk}"</span>
+                    <button
+                      onClick={() => handleCopy(hk, uniqueKey)}
+                      className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-blue-600 hover:text-white text-xs font-bold text-slate-400 flex items-center gap-1 shrink-0"
+                    >
+                      {copiedIdx === uniqueKey ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copiedIdx === uniqueKey ? "Copiado" : "Copiar"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

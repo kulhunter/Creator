@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Navbar from "./components/Navbar";
 import ScriptGeneratorView from "./components/ScriptGeneratorView";
-import HookGeneratorProView from "./components/HookGeneratorProView";
+import OfferBuilderView from "./components/OfferBuilderView";
 import ProfileAuditView from "./components/ProfileAuditView";
+import HookGeneratorProView from "./components/HookGeneratorProView";
 import FormatsVisualView from "./components/FormatsVisualView";
 import OnlineToolsView from "./components/OnlineToolsView";
+import AiStudioView from "./components/AiStudioView";
 import CreatorSecretsView from "./components/CreatorSecretsView";
 import MasterclassView from "./components/MasterclassView";
 
@@ -17,16 +19,18 @@ export default function App() {
       
       <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full overflow-y-auto">
         {activeTab === "script_ai" && <ScriptGeneratorView />}
-        {activeTab === "hooks_pro" && <HookGeneratorProView />}
+        {activeTab === "offer_builder" && <OfferBuilderView />}
         {activeTab === "audit_profile" && <ProfileAuditView />}
+        {activeTab === "hooks_pro" && <HookGeneratorProView />}
         {activeTab === "formats_simple" && <FormatsVisualView />}
         {activeTab === "tools_online" && <OnlineToolsView />}
+        {activeTab === "ai_chat" && <AiStudioView />}
         {activeTab === "secrets_masters" && <CreatorSecretsView />}
         {activeTab === "masterclass" && <MasterclassView />}
       </main>
 
       <footer className="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        CreatorOS Pro © 2026-2027 • Diseñado para que cualquier persona o negocio cree contenido que retiene y vende.
+        CreatorOS Enterprise Suite © 2026-2027 • Herramienta de trabajo definitiva para emprendedores y creadores.
       </footer>
     </div>
   );
