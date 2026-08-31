@@ -1,6 +1,7 @@
 import React from "react";
 import {
   LayoutDashboard,
+  Bot,
   Film,
   Sparkles,
   FileText,
@@ -16,6 +17,7 @@ import {
 export default function Sidebar({ activeTab, setActiveTab }) {
   const menuItems = [
     { id: "dashboard", label: "Panel General", icon: LayoutDashboard, badge: "Hub" },
+    { id: "ai_studio", label: "AI Studio (Llama 3)", icon: Bot, badge: "Gratis" },
     { id: "formats", label: "32 Formatos Creativos", icon: Film, badge: "FCC" },
     { id: "hooks", label: "Generador de Hooks", icon: Sparkles, badge: "50+" },
     { id: "script_builder", label: "Constructor de Guiones", icon: FileText, badge: "IA" },
